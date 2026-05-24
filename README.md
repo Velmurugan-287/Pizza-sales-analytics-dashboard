@@ -58,14 +58,90 @@ The analysis focuses on revenue, order volume, customer purchasing patterns, pro
 - Business performance summary
 - Dashboard-style executive insights
 
-## Use Case
+## SQL Queries used in this project 
 
-This project is useful for:
-- Business analytics portfolios
-- Data visualization practice
-- Sales performance reporting
-- Restaurant operations planning
 
-## License
+select * from pizza_sales
 
-This project is for educational and portfolio purposes.
+
+select sum(total_price) AS Total_Revenue from pizza_sales
+
+
+select * from pizza_sales
+
+select sum(total_price) / count(distinct order_id) as Avg_Order_Value from pizza_sales
+
+
+select sum(quantity) as Total_Pizza_Sold from pizza_sales
+
+select count(distinct order_id) as Total_Orders from pizza_sales
+
+select cast(sum(quantity) AS DECIMAL(10,2)) / count(distinct order_id) as Avg_Pizzas_Per_Order from pizza_sales
+
+--Daily Trend
+
+SELECT DATENAME(DW, order_date) AS order_day, COUNT(DISTINCT order_id) AS total_orders 
+FROM pizza_sales
+GROUP BY DATENAME(DW, order_date)
+
+
+--Hourly Trend
+
+SELECT DATEPART(HOUR, order_time) as order_hours, COUNT(DISTINCT order_id) as total_orders
+from pizza_sales
+group by DATEPART(HOUR, order_time)
+order by DATEPART(HOUR, order_time)
+
+
+SELECT pizza_category, CAST(SUM(total_price) AS DECIMAL(10,2)) as total_revenue,
+CAST(SUM(total_price) * 100 / (SELECT SUM(total_price) from pizza_sales) AS DECIMAL(10,2)) AS PCT
+FROM pizza_sales
+GROUP BY pizza_category
+
+
+
+SELECT pizza_size, CAST(SUM(total_price) AS DECIMAL(10,2)) as total_revenue,
+CAST(SUM(total_price) * 100 / (SELECT SUM(total_price) from pizza_sales) AS DECIMAL(10,2)) AS PCT
+FROM pizza_sales
+GROUP BY pizza_size
+ORDER BY pizza_size
+
+
+SELECT pizza_category, SUM(quantity) as Total_Quantity_Sold
+FROM pizza_sales
+WHERE MONTH(order_date) = 2
+GROUP BY pizza_category
+ORDER BY Total_Quantity_Sold DESC
+
+
+SELECT Top 5 pizza_name, SUM(quantity) AS Total_Pizza_Sold
+FROM pizza_sales
+GROUP BY pizza_name
+ORDER BY Total_Pizza_Sold DESC
+
+
+SELECT TOP 5 pizza_name, SUM(quantity) AS Total_Pizza_Sold
+FROM pizza_sales
+GROUP BY pizza_name
+ORDER BY Total_Pizza_Sold ASC
+
+
+SELECT DATENAME(DW, order_date) AS order_day, COUNT(DISTINCT order_id) AS total_orders 
+FROM pizza_sales
+WHERE MONTH(order_date) = 1
+GROUP BY DATENAME(DW, order_date)
+
+
+SELECT DATENAME(DW, order_date) AS order_day, COUNT(DISTINCT order_id) AS total_orders 
+FROM pizza_sales
+WHERE DATEPART(QUARTER, order_date) = 1
+GROUP BY DATENAME(DW, order_date)
+
+
+
+
+##Dashboard 
+
+
+<img width="1550" height="859" alt="image" src="https://github.com/user-attachments/assets/022810d4-1710-485d-a5ea-a21f38a30dde" />
+
